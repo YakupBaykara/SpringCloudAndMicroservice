@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: com.yb.currencyexchangeservice.CurrencyExchangeServiceApplicationTests
+-------------------------------------------------------------------------------
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 42.814 s - in com.yb.currencyexchangeservice.CurrencyExchangeServiceApplicationTests

@@ -1,0 +1,5 @@
+com\yb\currencyexchangeservice\CurrencyExchangeServiceApplication.class
+com\yb\currencyexchangeservice\exchange\CurrencyExchangeRepository.class
+com\yb\currencyexchangeservice\exchange\CircuitBreakerController.class
+com\yb\currencyexchangeservice\exchange\CurrencyExchangeController.class
+com\yb\currencyexchangeservice\exchange\CurrencyExchange.class

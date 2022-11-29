@@ -1,0 +1,87 @@
+version: '3.7'
+
+services: 
+  currency-exchange:
+    image: currency-exchange-service-0.0.1:v1.1   #Docker image ismi ile aynı olacak
+    mem_limit: 700m
+    ports:
+      - 8000:8000
+    networks:
+      - currency-network
+    depends_on:
+      - naming-server
+      - rabbitmq
+    environment: 
+      EUREKA.CLIENT.SERVICE-URL.DEFAULT-ZONE: http://naming-server:8761/eureka     #applicaion.properties' ten gelen ifade
+      SPRNG.ZIPKIN.BASE-URL: http://localhos:9411     #applicaion.properties' ten gelen ifade
+      RABBIT_URI: amqp://guest:guest@rabbitmq:5672
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_ZIPKIN_SENDER_TYPE: rabbit
+
+  currency-conversion:
+    image: currency-exconversion-service-0.0.1:v1.1   #Docker image ismi ile aynı olacak
+    mem_limit: 700m
+    ports:
+      - 8100:8100
+    networks:
+      - currency-network
+    depends_on:
+      - naming-server
+      - rabbitmq
+    environment: 
+    # currency-conversion localhost üzerinde çalıştığı için çalışmayacaktır. currency-conversion-feing eureka üzerinden(proxy) geçtiği için çalışır.
+      EUREKA.CLIENT.SERVICE-URL.DEFAULT-ZONE: http://naming-server:8761/eureka     #applicaion.properties' ten gelen ifade
+      SPRNG.ZIPKIN.BASE-URL: http://localhos:9411     #applicaion.properties' ten gelen ifade
+      RABBIT_URI: amqp://guest:guest@rabbitmq:5672
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_ZIPKIN_SENDER_TYPE: rabbit
+    
+  api-gateway:
+    image: api-gateway-service-0.0.1:v1.1   #Docker image ismi ile aynı olacak
+    mem_limit: 700m
+    ports:
+      - 8765:8765
+    networks:
+      - currency-network
+    depends_on:
+      - naming-server
+      - rabbitmq
+    environment: 
+      EUREKA.CLIENT.SERVICE-URL.DEFAULT-ZONE: http://naming-server:8761/eureka     #applicaion.properties' ten gelen ifade
+      SPRNG.ZIPKIN.BASE-URL: http://localhos:9411     #applicaion.properties' ten gelen ifade
+      RABBIT_URI: amqp://guest:guest@rabbitmq:5672
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_ZIPKIN_SENDER_TYPE: rabbit
+
+  naming-server:
+    image: naming-server-service-0.0.1:v1.1   #Docker image ismi ile aynı olacak
+    mem_limit: 700m
+    ports:
+      - 8761:8761
+    networks:
+      - currency-network
+
+  zipkin-server:
+    image: openzipkin/zipkin:2.23  #Docker image ismi ile aynı olacak
+    mem_limit: 700m
+    ports:
+      - 9411:9411
+    networks:
+      - currency-network
+    depends_on:
+      - rabbitmq
+    restart: always
+    environment:
+      RABBIT_URI: amqp://guest:guest@rabbitmq:5672      
+
+  rabbitmq:
+    image: rabbitmq:3.9.14-management  #Docker image ismi ile aynı olacak
+    mem_limit: 300m
+    ports:
+      - 5672:5672
+      - 15672:15672
+    networks:
+      - currency-network
+
+networks:
+  currency-network:    
